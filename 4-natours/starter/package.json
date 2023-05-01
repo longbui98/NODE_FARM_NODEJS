@@ -9,6 +9,7 @@
   "scripts": {
     "start": "nodemon server.js",
     "start:prod": "nodemon server.js",
+    "debug": "ndb server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "tonylong",
@@ -16,7 +17,9 @@
   "dependencies": {
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "slugify": "^1.6.5",
+    "validator": "^13.9.0"
   },
   "devDependencies": {
     "eslint": "^8.37.0",
