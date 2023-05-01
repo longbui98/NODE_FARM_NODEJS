@@ -18,6 +18,22 @@ mongoose.connect(DB,
 
 
 const port = process.env.PORT || 8080;
-app.listen(port, '127.0.0.1', () => {
+const server = app.listen(port, '127.0.0.1', () => {
     console.log(`Server is listening on port ${port}`);
 });
+
+process.on('unhandleRejection', err => {
+    console.log('UNHANDLER REJECTION 🔥🔥! Shutting down');
+    console.log(err.name, err.message);
+    server.close(() => {
+        process.exit(1);
+    })
+})
+
+process.on('uncaughtException', err => {
+    console.log('UNCAUGHT REJECTION 🔥🔥! Shutting down');
+    console.log(err.name, err.message);
+    server.close(() => {
+        process.exit(1);
+    })
+})
