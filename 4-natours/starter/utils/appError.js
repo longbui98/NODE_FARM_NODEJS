@@ -8,4 +8,4 @@ class AppError extends Error {
         Error.captureStackTrace(this, this.constructor);
     }
 }
-exports.module = AppError;
+module.exports = AppError;
