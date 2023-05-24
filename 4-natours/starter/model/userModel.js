@@ -1,7 +1,7 @@
+const crypto = require('crypto');
 const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
-const catchAsync = require("../utils/catchAsync");
 
 //name, email, photo, password, confirmPassword
 const userSchema = mongoose.Schema({
@@ -27,6 +27,11 @@ const userSchema = mongoose.Schema({
         minLength: [8, "The minimum password's length must be greater than 8"],
         select: false
     },
+    role: {
+        type: String,
+        enum: ['user', 'guide', 'lead-guide', 'admin'],
+        default: 'user'
+    },
     confirmPassword: {
         type: String,
         require: [true, "Please confirm a password"],
@@ -37,7 +42,9 @@ const userSchema = mongoose.Schema({
             message: "Password must be matched"
         }
     },
-    passwordChangedAt: Date
+    passwordChangedAt: Date,
+    passwordResetToken: String,
+    passwordResetExpires: Date
 });
 
 userSchema.pre('save', async function (next) {
@@ -60,6 +67,16 @@ userSchema.methods.changePasswordAfter = function (JWTTimestamp) {
         console.log(this.passwordChangedAt, JWTTimestamp);
     }
     return false;
+}
+
+userSchema.methods.createPasswordResetToken = function () {
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+
+    console.log(resetToken, this.passwordResetToken);
+
+    this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+    return resetToken;
 }
 
 const User = mongoose.model("User", userSchema);
