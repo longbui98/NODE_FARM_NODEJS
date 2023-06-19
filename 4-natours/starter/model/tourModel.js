@@ -122,6 +122,12 @@ const tourSchema = new mongoose.Schema({
 
 tourSchema.virtual('durationWeeks').get(function (next) {
     return this.duration / 7;
+});
+
+tourSchema.virtual('reviews', {
+    ref: 'Review',
+    foreignField: 'tours',
+    localField: '_id'
 })
 
 //DOCUMENT MIDDLE WARE run on save() and create()
